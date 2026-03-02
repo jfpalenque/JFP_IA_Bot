@@ -4,6 +4,7 @@ import axios from "axios";
 const app = express();
 app.use(express.json());
 
+// Variables de entorno
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
 const AI_API_KEY = process.env.AI_API_KEY;
 
@@ -11,42 +12,49 @@ const TELEGRAM_URL = `https://api.telegram.org/bot${TELEGRAM_TOKEN}`;
 
 // Webhook de Telegram
 app.post("/webhook", async (req, res) => {
-  const message = req.body.message;
+  try {
+    const message = req.body.message;
 
-  if (message && message.text) {
-    const chatId = message.chat.id;
-    const userText = message.text;
+    if (message && message.text) {
+      const chatId = message.chat.id;
+      const userText = message.text;
 
-    // Llamada a la IA (GPT‑4o mini)
-    const aiResponse = await axios.post(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        model: "gpt-4o-mini",
-        messages: [{ role: "user", content: userText }]
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${AI_API_KEY}`,
-          "Content-Type": "application/json"
+      // Llamada a la IA (GPT‑4o mini)
+      const aiResponse = await axios.post(
+        "https://api.openai.com/v1/chat/completions",
+        {
+          model: "gpt-4o-mini",
+          messages: [{ role: "user", content: userText }]
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${AI_API_KEY}`,
+            "Content-Type": "application/json"
+          }
         }
-      }
-    );
+      );
 
-    const reply = aiResponse.data.choices[0].message.content;
+      const reply = aiResponse.data.choices[0].message.content;
 
-    // Enviar respuesta a Telegram
-    await axios.post(`${TELEGRAM_URL}/sendMessage`, {
-      chat_id: chatId,
-      text: reply
-    });
+      // Enviar respuesta a Telegram
+      await axios.post(`${TELEGRAM_URL}/sendMessage`, {
+        chat_id: chatId,
+        text: reply
+      });
+    }
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Error procesando mensaje:", error.response?.data || error);
+    res.sendStatus(500);
   }
-
-  res.sendStatus(200);
 });
 
-// Para que Telegram valide el webhook
+// Ruta básica para comprobar que el servidor está vivo
 app.get("/", (req, res) => {
-  res.send("Bot de Telegram con IA funcionando");
+  res.send("Bot de Telegram con IA funcionando correctamente.");
 });
 
-app.listen(3000, () => console.log("Servidor iniciado"));
+// Puerto dinámico para Railway
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Servidor iniciado en puerto ${PORT}`));
