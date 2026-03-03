@@ -20,7 +20,7 @@ app.post("/webhook", async (req, res) => {
     if (message && message.text) {
       const chatId = message.chat.id;
       const messageText = message.text;
-	  console.log(`Mensaje ${messageText}`)
+	  console.log(`Mensaje ${messageText}`);
 
       //// Llamada a la IA (GPT‑4o mini)
       //const aiResponse = await axios.post(
@@ -66,7 +66,9 @@ const aiMessage = response.data.candidates[0].content.parts[0].text;
     res.sendStatus(200);
   } catch (error) {
     console.error("Error procesando mensaje:", error.response?.data || error);
-    res.sendStatus(500);
+    //res.sendStatus(500);
+	
+	res.sendStatus(200);
   }
 });
 
