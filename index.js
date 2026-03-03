@@ -20,6 +20,7 @@ app.post("/webhook", async (req, res) => {
     if (message && message.text) {
       const chatId = message.chat.id;
       const messageText = message.text;
+	  console.log(`Mensaje ${messageText}`)
 
       //// Llamada a la IA (GPT‑4o mini)
       //const aiResponse = await axios.post(
