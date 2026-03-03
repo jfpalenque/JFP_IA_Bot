@@ -41,7 +41,7 @@ app.post("/webhook", async (req, res) => {
 	  const response = await axios.post(
 		  "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + GEMINI_API_KEY,
 		  {
-			contents: [{ parts: [{ text: messageText }] }]
+			contents: [{ parts: [{ text: userText }] }]
 		  }
 		);
 
@@ -51,7 +51,7 @@ app.post("/webhook", async (req, res) => {
       // Enviar respuesta a Telegram
       await axios.post(`${TELEGRAM_URL}/sendMessage`, {
         chat_id: chatId,
-        text: reply
+        text: aiMessage
       });
     }
 
