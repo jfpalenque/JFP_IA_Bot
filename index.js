@@ -39,6 +39,25 @@ app.post("/webhook", async (req, res) => {
 
       //const reply = aiResponse.data.choices[0].message.content;
 	  
+	  
+	  
+	const response = await axios.post(
+		  "https://api.groq.com/openai/v1/chat/completions",
+		  {
+			model: "llama3-8b-8192",
+			messages: [{ role: "user", content: messageText }]
+		  },
+		  {
+			headers: {
+			  "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
+			  "Content-Type": "application/json"
+			}
+		  }
+		);
+	const aiMessage = response.data.choices[0].message.content;
+
+	  /*
+	  //GOOGLE
 	  //const urlGemini = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" + GEMINI_API_KEY;
 	  const urlGemini = "https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-lite:generateContent?key=" + GEMINI_API_KEY;
 	  
@@ -56,7 +75,7 @@ app.post("/webhook", async (req, res) => {
 		);
 
 	const aiMessage = response.data.candidates[0].content.parts[0].text;
-
+*/
 
 
       // Enviar respuesta a Telegram
