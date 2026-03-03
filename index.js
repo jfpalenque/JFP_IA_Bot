@@ -40,19 +40,21 @@ app.post("/webhook", async (req, res) => {
       //const reply = aiResponse.data.choices[0].message.content;
 	  
 	  
-	  const response = await axios.post(
-  "https://api.groq.com/openai/v1/chat/completions",
-  {
-    model: "llama3-70b-8192",
-    messages: [{ role: "user", content: messageText }]
-  },
-  {
-    headers: {
-      "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
-      "Content-Type": "application/json"
-    }
-  }
-);
+	const response = await axios.post(
+	  "https://api.groq.com/openai/v1/chat/completions",
+	  {
+		model: "llama-3.3-70b-versatile",	
+		messages: [{ role: "user", content: messageText }]
+	  },
+	  {
+		headers: {
+		  "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
+		  "Content-Type": "application/json"
+		}
+	  }
+	);
+ 
+
 
 const aiMessage = response.data.choices[0].message.content;
  
