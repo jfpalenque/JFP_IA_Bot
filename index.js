@@ -6,7 +6,9 @@ app.use(express.json());
 
 // Variables de entorno
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
-const AI_API_KEY = process.env.AI_API_KEY;
+//const AI_API_KEY = process.env.AI_API_KEY;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+
 
 const TELEGRAM_URL = `https://api.telegram.org/bot${TELEGRAM_TOKEN}`;
 
@@ -19,22 +21,32 @@ app.post("/webhook", async (req, res) => {
       const chatId = message.chat.id;
       const userText = message.text;
 
-      // Llamada a la IA (GPT‑4o mini)
-      const aiResponse = await axios.post(
-        "https://api.openai.com/v1/chat/completions",
-        {
-          model: "gpt-4o-mini",
-          messages: [{ role: "user", content: userText }]
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${AI_API_KEY}`,
-            "Content-Type": "application/json"
-          }
-        }
-      );
+      //// Llamada a la IA (GPT‑4o mini)
+      //const aiResponse = await axios.post(
+      //  "https://api.openai.com/v1/chat/completions",
+      //  {
+      //    model: "gpt-4o-mini",
+      //    messages: [{ role: "user", content: userText }]
+      //  },
+      //  {
+      //    headers: {
+      //      Authorization: `Bearer ${AI_API_KEY}`,
+      //      "Content-Type": "application/json"
+      //    }
+      //  }
+      //);
 
-      const reply = aiResponse.data.choices[0].message.content;
+      //const reply = aiResponse.data.choices[0].message.content;
+	  
+	  const response = await axios.post(
+		  "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + GEMINI_API_KEY,
+		  {
+			contents: [{ parts: [{ text: messageText }] }]
+		  }
+		);
+
+		const aiMessage = response.data.candidates[0].content.parts[0].text;
+
 
       // Enviar respuesta a Telegram
       await axios.post(`${TELEGRAM_URL}/sendMessage`, {
