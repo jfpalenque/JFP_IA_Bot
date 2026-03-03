@@ -44,7 +44,7 @@ app.post("/webhook", async (req, res) => {
 			contents: [
 			  {
 				parts: [
-				  { text: messageText }
+				  { text: userText }
 				]
 			  }
 			]
