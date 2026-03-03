@@ -19,7 +19,7 @@ app.post("/webhook", async (req, res) => {
 
     if (message && message.text) {
       const chatId = message.chat.id;
-      const userText = message.text;
+      const messageText = message.text;
 
       //// Llamada a la IA (GPT‑4o mini)
       //const aiResponse = await axios.post(
@@ -39,21 +39,18 @@ app.post("/webhook", async (req, res) => {
       //const reply = aiResponse.data.choices[0].message.content;
 	  
 	  const response = await axios.post(
-		  "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY,
+	  "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY,
+	  {
+		contents: [
 		  {
-			contents: [
-			  {
-				parts: [
-				  { text: userText }
-				]
-			  }
+			parts: [
+			  { text: messageText }
 			]
 		  }
-		);
+		]
+	  }
+	);
 
-		const aiMessage = response.data.candidates[0].content.parts[0].text;
-
-	
 
       // Enviar respuesta a Telegram
       await axios.post(`${TELEGRAM_URL}/sendMessage`, {
